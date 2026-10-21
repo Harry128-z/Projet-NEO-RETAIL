@@ -30,19 +30,19 @@ Chaque dossier contient un README qui décrit son contenu et le jalon auquel il 
 | Exigence du sujet | Emplacement | État |
 |---|---|---|
 | **L1** — Dossier d'architecture (PDF) : diagrammes logique / physique, flux, choix motivés, sécurité / RGPD | `docs/L1_dossier_architecture.pdf` + `docs/diagrammes/*.pdf` | ✅ Version S0 (mise à jour à chaque jalon) |
-| Décisions d'architecture (ADR courts) | `docs/adr/` | ✅ 9 ADR |
-| Dictionnaire de données | `docs/dictionnaire_donnees.md` | ✅ Sources (Silver / Gold en S3-S4) |
-| **L2** — Dépôt Git structuré + README d'orchestration + Makefile | ce dépôt | 🟡 Structure faite ; Makefile et démarrage en S1 |
-| `.env.sample` + instructions de démarrage Docker Compose | racine + `infra/` | ⏳ S1 |
-| **L3** — DAG Airflow d'ingestion batch (≥ 2 sources) | `dags/` | ⏳ S1 |
-| **L3** — Streaming : 1 topic clickstream, 1 consommateur, écriture en Bronze | `streaming/` | ⏳ S2 |
-| **L3** — Modèles dbt `stg_`, `int_`, `dim_`, `fct_` jusqu'à Gold | `dbt/` | ⏳ S3 |
-| **L4** — Règles Great Expectations, rapports publiés, contrats de données YAML | `quality/` | ⏳ S1 (contrats) et S4 |
-| **L5** — Pipeline ML avec suivi MLflow + job de prévision | `ml/` | ⏳ S5 |
-| **L6** — Tableau de bord BI (3 à 5 KPI) | `bi/` | ⏳ S6 |
-| **L7** — Supervision : fraîcheur, latence, erreurs, alertes simulées | `infra/` | ⏳ S7 |
-| CI/CD (GitHub Actions) | `.github/workflows/` | ⏳ S7 |
-| **L8** — Soutenance + post-mortem (3 risques et plans d'action) | `docs/` | ⏳ S8 |
+| Décisions d'architecture (ADR courts) | `docs/adr/` |  9 ADR |
+| Dictionnaire de données | `docs/dictionnaire_donnees.md` |  Sources (Silver / Gold en S3-S4) |
+| **L2** — Dépôt Git structuré + README d'orchestration + Makefile | ce dépôt |  Structure faite ; Makefile et démarrage en S1 |
+| `.env.sample` + instructions de démarrage Docker Compose | racine + `infra/` | S1 |
+| **L3** — DAG Airflow d'ingestion batch (≥ 2 sources) | `dags/` | S1 |
+| **L3** — Streaming : 1 topic clickstream, 1 consommateur, écriture en Bronze | `streaming/` | S2 |
+| **L3** — Modèles dbt `stg_`, `int_`, `dim_`, `fct_` jusqu'à Gold | `dbt/` | S3 |
+| **L4** — Règles Great Expectations, rapports publiés, contrats de données YAML | `quality/` | S1 (contrats) et S4 |
+| **L5** — Pipeline ML avec suivi MLflow + job de prévision | `ml/` | S5 |
+| **L6** — Tableau de bord BI (3 à 5 KPI) | `bi/` | S6 |
+| **L7** — Supervision : fraîcheur, latence, erreurs, alertes simulées | `infra/` | S7 |
+| CI/CD (GitHub Actions) | `.github/workflows/` | S7 |
+| **L8** — Soutenance + post-mortem (3 risques et plans d'action) | `docs/` | S8 |
 
 ## Documentation
 
