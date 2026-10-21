@@ -1,0 +1,26 @@
+# Données (jamais versionnées)
+data/
+*.csv.gz
+*.jsonl.gz
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# dbt
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+
+# Spark / checkpoints locaux
+checkpoints/
+spark-warehouse/
+
+# Divers
+.DS_Store
+.idea/
+.vscode/

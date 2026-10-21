@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>NeoRetail — Architecture physique</title>
+<style id="schema-style">
+#d-physique {
+  position: relative; width: 1200px; height: 730px;
+  font-family: 'Helvetica Neue', Arial, sans-serif; color: #1d2433;
+  * { box-sizing: border-box; }
+  .hote { position: absolute; left: 0; top: 0; width: 1200px; height: 680px; border: 2px dashed #9aa6b5; border-radius: 12px; }
+  .hote > span { position: absolute; left: 14px; top: -11px; background: #fff; padding: 0 8px; font-size: 13px; font-weight: 700; color: #4a5568; }
+  .groupe { position: absolute; border-radius: 10px; }
+  .groupe > h3 { margin: 0; position: absolute; left: 12px; top: 8px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  .g-orch { background: #fff4e5; } .g-orch > h3 { color: #a05a00; }
+  .g-cons { background: #eaf7ef; } .g-cons > h3 { color: #1d6b3a; }
+  .g-stock { background: #eaf2fb; } .g-stock > h3 { color: #0f3d68; }
+  .g-obs { background: #f5f0fb; } .g-obs > h3 { color: #5b2c91; }
+  .svc { position: absolute; background: #fff; border: 1.5px solid #7a8899; border-radius: 7px; padding: 6px 8px; font-size: 11px; line-height: 1.35; text-align: center; z-index: 2; }
+  .svc b { display: block; font-size: 13.5px; font-family: 'DejaVu Sans Mono', Consolas, monospace; }
+  .svc .port { display: inline-block; background: #0f3d68; color: #fff; border-radius: 8px; padding: 0 6px; font-size: 10.5px; margin-top: 2px; }
+  .svc i { font-style: normal; color: #5b6575; }
+  .g-orch .svc { border-color: #e0a020; } .g-cons .svc { border-color: #3c9a5f; }
+  .g-stock .svc { border-color: #3a77b5; } .g-obs .svc { border-color: #8a5cc2; }
+  .svc.petit { padding: 4px 6px; }
+  svg { position: absolute; left: 0; top: 0; z-index: 1; }
+  .lien { fill: none; stroke: #4a5568; stroke-width: 1.6; }
+  .pointille { fill: none; stroke: #8a5cc2; stroke-width: 1.6; stroke-dasharray: 5 4; }
+  .lbl { font-size: 10.5px; fill: #3b4656; }
+  .legende { position: absolute; left: 0; top: 694px; width: 1200px; display: flex; gap: 28px; font-size: 11.5px; color: #3b4656; align-items: center; }
+  .legende svg { position: static; }
+}
+</style>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  body { margin: 0; background: #fff; }
+  .page { zoom: .86; }
+  .cartouche { font-family: 'Helvetica Neue', Arial, sans-serif; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #0f3d68; margin-bottom: 22px; padding-bottom: 6px; width: 1200px; }
+  .cartouche h1 { margin: 0; font-size: 22px; color: #0f3d68; }
+  .cartouche span { font-size: 12px; color: #5b6575; }
+</style>
+</head><body><div class="page">
+<div class="cartouche"><h1>NeoRetail — Architecture physique (Docker Compose)</h1><span>Dossier d'architecture (L1) · Version S0</span></div>
+<!-- debut-schema -->
+<div id="d-physique">
+  <div class="hote"><span>Machine hôte · Docker Compose · réseau interne « neoretail » · cible 16 Go RAM / 4 vCPU</span></div>
+
+  <div class="groupe g-orch" style="left:20px;top:22px;width:560px;height:236px"><h3>Orchestration & traitement</h3></div>
+  <div class="groupe g-cons" style="left:620px;top:22px;width:560px;height:236px"><h3>Requête & consommation</h3></div>
+  <div class="groupe g-stock" style="left:20px;top:300px;width:1160px;height:160px"><h3>Stockage & catalogue</h3></div>
+  <div class="groupe g-obs" style="left:20px;top:500px;width:1160px;height:160px"><h3>Supervision & traçabilité</h3></div>
+
+  <!-- Orchestration -->
+  <div class="svc" style="left:40px;top:60px;width:160px;height:84px"><b>airflow</b><i>planificateur + interface</i><br><span class="port">:8081</span> <i>2 Go</i></div>
+  <div class="svc" style="left:220px;top:60px;width:160px;height:84px"><b>redpanda</b><i>file de messages</i><br><span class="port">:9092</span> <i>1 Go</i></div>
+  <div class="svc" style="left:400px;top:60px;width:160px;height:84px"><b>spark-streaming</b><i>consommateur temps réel</i><br><span class="port">:4040</span> <i>2 Go</i></div>
+  <div class="svc petit" style="left:220px;top:180px;width:160px;height:62px"><b>redpanda-console</b><i>interface des topics</i> <span class="port">:8085</span></div>
+
+  <!-- Consommation -->
+  <div class="svc" style="left:640px;top:60px;width:160px;height:84px"><b>trino</b><i>moteur SQL</i><br><span class="port">:8080</span> <i>3 Go</i></div>
+  <div class="svc" style="left:820px;top:60px;width:160px;height:84px"><b>superset</b><i>tableaux de bord</i><br><span class="port">:8088</span> <i>1 Go</i></div>
+  <div class="svc" style="left:1000px;top:60px;width:160px;height:84px"><b>mlflow</b><i>suivi des modèles</i><br><span class="port">:5000</span> <i>0,5 Go</i></div>
+  <div class="svc petit" style="left:820px;top:180px;width:160px;height:62px"><b>datadocs</b><i>rapports qualité + doc dbt</i> <span class="port">:8082</span></div>
+
+  <!-- Stockage -->
+  <div class="svc" style="left:160px;top:338px;width:240px;height:96px"><b>minio</b><i>stockage objet compatible S3<br>atterrissage · lakehouse · artefacts</i><br><span class="port">:9000 / :9001</span> <i>0,5 Go</i></div>
+  <div class="svc" style="left:480px;top:338px;width:240px;height:96px"><b>hive-metastore</b><i>catalogue des tables Iceberg</i><br><br><span class="port">:9083</span> <i>0,5 Go</i></div>
+  <div class="svc" style="left:800px;top:338px;width:240px;height:96px"><b>postgres</b><i>bases internes : metastore, airflow,<br>superset, mlflow, marquez</i><br><span class="port">:5432</span> <i>0,5 Go</i></div>
+
+  <!-- Supervision -->
+  <div class="svc" style="left:60px;top:540px;width:220px;height:90px"><b>grafana</b><i>tableaux de bord SLO</i><br><span class="port">:3001</span></div>
+  <div class="svc" style="left:340px;top:540px;width:260px;height:90px"><b>prometheus</b><i>métriques (+ pushgateway :9091,<br>statsd-exporter :9102)</i><br><span class="port">:9090</span></div>
+  <div class="svc" style="left:660px;top:540px;width:220px;height:90px"><b>alertmanager</b><i>envoi des alertes (webhook simulé)</i><br><span class="port">:9093</span></div>
+  <div class="svc" style="left:940px;top:540px;width:220px;height:90px"><b>marquez</b><i>traçabilité OpenLineage</i><br><span class="port">:5002 / :3000</span></div>
+
+  <svg width="1200" height="680" viewBox="0 0 1200 680">
+    <defs>
+      <marker id="p-fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/></marker>
+      <marker id="p-fv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a5cc2"/></marker>
+    </defs>
+    <!-- redpanda -> spark -->
+    <path class="lien" d="M380,102 L398,102" marker-end="url(#p-fl)"/>
+    <!-- console -> redpanda -->
+    <path class="lien" d="M300,180 L300,146" marker-end="url(#p-fl)"/>
+    <!-- spark -> minio (écriture Bronze) -->
+    <path class="lien" d="M440,144 L440,276 L330,276 L330,336" marker-end="url(#p-fl)"/>
+    <text class="lbl" x="446" y="215">écriture Bronze</text>
+    <!-- spark -> hive-metastore -->
+    <path class="lien" d="M520,144 L520,336" marker-end="url(#p-fl)"/>
+    <!-- airflow -> minio -->
+    <path class="lien" d="M100,144 L100,386 L158,386" marker-end="url(#p-fl)"/>
+    <text class="lbl" x="106" y="300">lecture des fichiers</text>
+    <!-- airflow -> trino -->
+    <path class="lien" d="M160,144 L160,170 L210,170 L210,268 L660,268 L660,146" marker-end="url(#p-fl)"/>
+    <text class="lbl" x="560" y="262">requêtes SQL</text>
+    <!-- superset -> trino -->
+    <path class="lien" d="M820,102 L802,102" marker-end="url(#p-fl)"/>
+    <!-- trino -> hive-metastore -->
+    <path class="lien" d="M700,144 L700,336" marker-end="url(#p-fl)"/>
+    <!-- trino -> minio -->
+    <path class="lien" d="M760,144 L760,288 L370,288 L370,336" marker-end="url(#p-fl)"/>
+    <text class="lbl" x="560" y="300">lecture / écriture des tables</text>
+    <!-- hive-metastore -> postgres -->
+    <path class="lien" d="M720,386 L798,386" marker-end="url(#p-fl)"/>
+    <!-- mlflow -> postgres -->
+    <path class="lien" d="M1080,144 L1080,386 L1042,386" marker-end="url(#p-fl)"/>
+    <!-- grafana -> prometheus ; prometheus -> alertmanager -->
+    <path class="lien" d="M280,585 L338,585" marker-end="url(#p-fl)"/>
+    <path class="lien" d="M600,585 L658,585" marker-end="url(#p-fl)"/>
+    <!-- métriques et lineage -->
+    <path class="pointille" d="M470,460 L470,538" marker-end="url(#p-fv)"/>
+    <text class="lbl" x="478" y="500">métriques de tous les services</text>
+    <path class="pointille" d="M1050,460 L1050,538" marker-end="url(#p-fv)"/>
+    <text class="lbl" x="840" y="500">traçabilité (Airflow, Spark)</text>
+  </svg>
+
+  <div class="legende">
+    <span><svg width="40" height="10"><path d="M0,5 L40,5" stroke="#4a5568" stroke-width="1.6"/></svg> flux de données / requêtes</span>
+    <span><svg width="40" height="10"><path d="M0,5 L40,5" stroke="#8a5cc2" stroke-width="1.6" stroke-dasharray="5 4"/></svg> métriques et traçabilité</span>
+    <span><b style="background:#0f3d68;color:#fff;border-radius:8px;padding:0 6px">:port</b> port ouvert sur la machine (http://localhost:port)</span>
+    <span>Total mémoire estimé : ~13 Go</span>
+  </div>
+</div>
+<!-- fin-schema -->
+</div></body></html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>NeoRetail — Schéma en étoile des ventes</title>
+<style id="schema-style">
+#d-etoile {
+  position: relative; width: 1200px; height: 690px;
+  font-family: 'Helvetica Neue', Arial, sans-serif; color: #1d2433;
+  * { box-sizing: border-box; }
+  .table { position: absolute; background: #fff; border: 1.5px solid #3a77b5; border-radius: 8px; overflow: hidden; z-index: 2; }
+  .table.fait { border: 2px solid #9a7400; }
+  .entete { height: 46px; padding: 5px 10px; background: #eaf2fb; border-bottom: 1px solid #c9d6e3; }
+  .fait .entete { background: #fff6dc; border-bottom-color: #e7d293; }
+  .entete b { font-family: 'DejaVu Sans Mono', Consolas, monospace; font-size: 14px; display: block; }
+  .entete span { font-size: 11px; color: #3b4656; }
+  .entete em { font-style: normal; float: right; font-size: 10.5px; background: #0f3d68; color: #fff; border-radius: 8px; padding: 0 6px; margin-top: 2px; }
+  .fait .entete em { background: #9a7400; }
+  .ligne { display: grid; grid-template-columns: 136px 30px 1fr; height: 19px; line-height: 19px; font-size: 10.5px; padding: 0 8px; border-bottom: 1px solid #f0f3f6; }
+  .ligne:nth-child(even) { background: #f8fafc; }
+  .ligne code { font-family: 'DejaVu Sans Mono', Consolas, monospace; font-size: 10.5px; }
+  .ligne i { font-style: normal; color: #5b6575; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tag { font-size: 9px; font-weight: 700; }
+  .pk { color: #b8323a; } .fk { color: #0f6bb0; } .me { color: #1d6b3a; } .dd { color: #9a7400; }
+  .fait .ligne { grid-template-columns: 136px 30px 1fr; }
+  svg { position: absolute; left: 0; top: 0; z-index: 1; }
+  .lien { fill: none; stroke: #4a5568; stroke-width: 1.6; }
+  .card { font-size: 12px; font-weight: 700; fill: #4a5568; }
+  .legende { position: absolute; left: 400px; top: 505px; width: 400px; background: #f5f8fb; border: 1px solid #dde4ec; border-radius: 8px; padding: 10px 12px; font-size: 11px; line-height: 1.5; color: #3b4656; z-index: 2; }
+  .legende b { color: #1d2433; }
+}
+</style>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  body { margin: 0; background: #fff; }
+  .page { zoom: .86; }
+  .cartouche { font-family: 'Helvetica Neue', Arial, sans-serif; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #0f3d68; margin-bottom: 12px; padding-bottom: 6px; width: 1200px; }
+  .cartouche h1 { margin: 0; font-size: 22px; color: #0f3d68; }
+  .cartouche span { font-size: 12px; color: #5b6575; }
+</style>
+</head><body><div class="page">
+<div class="cartouche"><h1>NeoRetail — Schéma en étoile des ventes (zone Gold)</h1><span>Dossier d'architecture (L1) · Version S0</span></div>
+<!-- debut-schema -->
+<div id="d-etoile">
+
+  <!-- Dimensions de gauche -->
+  <div class="table" style="left:40px;top:20px;width:300px">
+    <div class="entete"><em>type 0</em><b>dim_date</b><span>Date · jour → mois → trimestre → année</span></div>
+    <div class="ligne"><code>date_key</code><span class="tag pk">PK</span><i>clé AAAAMMJJ</i></div>
+    <div class="ligne"><code>full_date</code><span></span><i>date</i></div>
+    <div class="ligne"><code>day_of_week</code><span></span><i>jour de la semaine</i></div>
+    <div class="ligne"><code>month</code><span></span><i>mois</i></div>
+    <div class="ligne"><code>quarter</code><span></span><i>trimestre</i></div>
+    <div class="ligne"><code>year</code><span></span><i>année</i></div>
+  </div>
+  <div class="table" style="left:40px;top:220px;width:300px">
+    <div class="entete"><em>SCD2</em><b>dim_customer</b><span>Client · historique des changements</span></div>
+    <div class="ligne"><code>customer_sk</code><span class="tag pk">PK</span><i>clé technique</i></div>
+    <div class="ligne"><code>customer_hk</code><span></span><i>identifiant pseudonymisé</i></div>
+    <div class="ligne"><code>region</code><span></span><i>région</i></div>
+    <div class="ligne"><code>segment</code><span></span><i>segment client</i></div>
+    <div class="ligne"><code>consent_marketing</code><span></span><i>consentement</i></div>
+    <div class="ligne"><code>valid_from</code><span></span><i>début de validité</i></div>
+    <div class="ligne"><code>valid_to</code><span></span><i>fin de validité</i></div>
+    <div class="ligne"><code>is_current</code><span></span><i>version courante</i></div>
+    <div class="ligne"><code>is_deleted</code><span></span><i>client supprimé</i></div>
+  </div>
+  <div class="table" style="left:40px;top:470px;width:300px">
+    <div class="entete"><em>SCD2</em><b>dim_product</b><span>Produit · produit → sous-catégorie → catégorie</span></div>
+    <div class="ligne"><code>product_sk</code><span class="tag pk">PK</span><i>clé technique</i></div>
+    <div class="ligne"><code>product_id</code><span></span><i>référence produit</i></div>
+    <div class="ligne"><code>category</code><span></span><i>catégorie</i></div>
+    <div class="ligne"><code>subcategory</code><span></span><i>sous-catégorie</i></div>
+    <div class="ligne"><code>brand</code><span></span><i>marque</i></div>
+    <div class="ligne"><code>list_price</code><span></span><i>prix catalogue (€)</i></div>
+    <div class="ligne"><code>unit_cost</code><span></span><i>coût unitaire (€)</i></div>
+    <div class="ligne"><code>vat_rate</code><span></span><i>taux de TVA</i></div>
+  </div>
+
+  <!-- Table de faits -->
+  <div class="table fait" style="left:430px;top:150px;width:340px">
+    <div class="entete"><em>fait</em><b>fct_sales</b><span>Ventes tous canaux · 1 ligne = 1 article vendu</span></div>
+    <div class="ligne"><code>sales_line_id</code><span class="tag pk">PK</span><i>identifiant de la ligne</i></div>
+    <div class="ligne"><code>date_key</code><span class="tag fk">FK</span><i>date de vente</i></div>
+    <div class="ligne"><code>customer_sk</code><span class="tag fk">FK</span><i>client (-1 = anonyme)</i></div>
+    <div class="ligne"><code>product_sk</code><span class="tag fk">FK</span><i>produit</i></div>
+    <div class="ligne"><code>store_sk</code><span class="tag fk">FK</span><i>magasin (-2 = en ligne)</i></div>
+    <div class="ligne"><code>channel_sk</code><span class="tag fk">FK</span><i>canal de vente</i></div>
+    <div class="ligne"><code>promo_sk</code><span class="tag fk">FK</span><i>code promo</i></div>
+    <div class="ligne"><code>order_id</code><span class="tag dd">DD</span><i>n° commande / ticket</i></div>
+    <div class="ligne"><code>qty</code><span class="tag me">M</span><i>quantité</i></div>
+    <div class="ligne"><code>gross_amount</code><span class="tag me">M</span><i>montant brut (€)</i></div>
+    <div class="ligne"><code>discount_amount</code><span class="tag me">M</span><i>remise (€)</i></div>
+    <div class="ligne"><code>net_amount</code><span class="tag me">M</span><i>montant net (€)</i></div>
+    <div class="ligne"><code>tax_amount</code><span class="tag me">M</span><i>TVA (€)</i></div>
+    <div class="ligne"><code>cost_amount</code><span class="tag me">M</span><i>coût d'achat (€)</i></div>
+    <div class="ligne"><code>margin_amount</code><span class="tag me">M</span><i>marge (€)</i></div>
+  </div>
+
+  <!-- Dimensions de droite -->
+  <div class="table" style="left:860px;top:20px;width:300px">
+    <div class="entete"><em>SCD1</em><b>dim_store</b><span>Magasin · magasin → ville → format</span></div>
+    <div class="ligne"><code>store_sk</code><span class="tag pk">PK</span><i>clé technique</i></div>
+    <div class="ligne"><code>store_id</code><span></span><i>référence magasin</i></div>
+    <div class="ligne"><code>city</code><span></span><i>ville</i></div>
+    <div class="ligne"><code>format</code><span></span><i>proximité, super, hyper…</i></div>
+  </div>
+  <div class="table" style="left:860px;top:230px;width:300px">
+    <div class="entete"><em>type 0</em><b>dim_channel</b><span>Canal de vente</span></div>
+    <div class="ligne"><code>channel_sk</code><span class="tag pk">PK</span><i>clé technique</i></div>
+    <div class="ligne"><code>channel</code><span></span><i>web, mobile, marketplace, magasin</i></div>
+    <div class="ligne"><code>channel_type</code><span></span><i>en ligne / physique</i></div>
+  </div>
+  <div class="table" style="left:860px;top:400px;width:300px">
+    <div class="entete"><em>type 0</em><b>dim_promo</b><span>Promotion</span></div>
+    <div class="ligne"><code>promo_sk</code><span class="tag pk">PK</span><i>clé technique</i></div>
+    <div class="ligne"><code>promo_code</code><span></span><i>code (NONE si aucun)</i></div>
+    <div class="ligne"><code>promo_rate</code><span></span><i>taux de remise</i></div>
+  </div>
+
+  <svg width="1200" height="690" viewBox="0 0 1200 690">
+    <!-- gauche : dimension (1) → fait (N) -->
+    <path class="lien" d="M340,75.5 C390,75.5 385,224.5 430,224.5"/>
+    <path class="lien" d="M340,275.5 C385,275.5 385,243.5 430,243.5"/>
+    <path class="lien" d="M340,525.5 C395,525.5 380,262.5 430,262.5"/>
+    <!-- droite -->
+    <path class="lien" d="M860,75.5 C810,75.5 815,281.5 770,281.5"/>
+    <path class="lien" d="M860,285.5 C815,285.5 815,300.5 770,300.5"/>
+    <path class="lien" d="M860,455.5 C805,455.5 820,319.5 770,319.5"/>
+    <g class="card">
+      <text x="346" y="70">1</text><text x="418" y="219">N</text>
+      <text x="346" y="270">1</text><text x="418" y="238">N</text>
+      <text x="346" y="520">1</text><text x="418" y="257">N</text>
+      <text x="848" y="70">1</text><text x="774" y="276">N</text>
+      <text x="848" y="280">1</text><text x="774" y="295">N</text>
+      <text x="848" y="450">1</text><text x="774" y="314">N</text>
+    </g>
+  </svg>
+
+  <div class="legende">
+    <b>Légende</b> — <span class="tag pk">PK</span> clé primaire · <span class="tag fk">FK</span> clé étrangère ·
+    <span class="tag me">M</span> mesure · <span class="tag dd">DD</span> dimension dégénérée · 1 — N : une ligne de dimension pour plusieurs ventes.<br>
+    <b>SCD2</b> : chaque changement crée une nouvelle version datée ; une vente est reliée à la version
+    valide à sa date (jointure « point-in-time »).<br>
+    <b>Membres spéciaux</b> : -1 = inconnu (ticket sans client), -2 = non applicable (magasin d'une vente en ligne).
+  </div>
+</div>
+<!-- fin-schema -->
+</div></body></html>

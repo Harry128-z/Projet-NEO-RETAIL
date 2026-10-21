@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<title>NeoRetail — Architecture logique</title>
+<style id="schema-style">
+#d-logique {
+  width: 1200px; padding: 8px 0; display: grid; grid-template-columns: 1fr 220px; gap: 20px;
+  font-family: 'Helvetica Neue', Arial, sans-serif; color: #1d2433;
+  * { box-sizing: border-box; }
+  .main { display: flex; flex-direction: column; }
+  .layer { border-radius: 10px; padding: 12px 14px 14px; }
+  .layer h3 { margin: 0 0 10px; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  .row { display: flex; gap: 10px; }
+  .box { flex: 1; background: #fff; border: 1.5px solid; border-radius: 7px; padding: 8px; text-align: center; font-size: 12.5px; line-height: 1.3; }
+  .box b { display: block; font-size: 14px; }
+  .box small { color: #5b6575; font-size: 12px; }
+  .fleche { height: 32px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: #3b4656; }
+  .fleche::before { content: "▼"; color: #7a8899; font-size: 16px; }
+  .fleche span { background: #eef2f6; padding: 2px 8px; border-radius: 10px; }
+  .src { background: #f3f5f8; } .src h3 { color: #4a5568; } .src .box { border-color: #9aa6b5; }
+  .ing { background: #fff4e5; } .ing h3 { color: #a05a00; } .ing .box { border-color: #e0a020; }
+  .lac { background: #eaf2fb; } .lac h3 { color: #0f3d68; }
+  .cons { background: #eaf7ef; } .cons h3 { color: #1d6b3a; } .cons .box { border-color: #3c9a5f; }
+  .zones { display: flex; align-items: stretch; }
+  .zone { flex: 1; border-radius: 8px; padding: 10px; text-align: center; border: 2px solid; background: #fff; }
+  .zone b { font-size: 16px; display: block; margin-bottom: 4px; }
+  .zone small { font-size: 12.5px; color: #3b4656; }
+  .bronze { border-color: #b06a2b; } .bronze b { color: #b06a2b; }
+  .silver { border-color: #7b8794; } .silver b { color: #5b6672; }
+  .gold { border-color: #c99a06; } .gold b { color: #9a7400; }
+  .passage { width: 130px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 11.5px; color: #3b4656; text-align: center; }
+  .passage::after { content: "→"; font-size: 26px; color: #7a8899; line-height: 1; }
+  .pied { margin-top: 8px; font-size: 12px; color: #3b4656; text-align: center; }
+  .deux { display: flex; gap: 22px; }
+  .deux > .col { flex: 1; display: flex; flex-direction: column; }
+  .etiquette { font-size: 11.5px; color: #3b4656; text-align: center; margin-bottom: 6px; font-weight: 600; }
+  .transverse { background: #f5f0fb; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .transverse h3 { margin: 0; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: #5b2c91; }
+  .transverse p { margin: 0; font-size: 11.5px; color: #5b6575; }
+  .transverse .box { border-color: #8a5cc2; flex: 0; }
+}
+</style>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  body { margin: 0; background: #fff; }
+  .page { zoom: .86; }
+  .cartouche { font-family: 'Helvetica Neue', Arial, sans-serif; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #0f3d68; margin-bottom: 14px; padding-bottom: 6px; width: 1200px; }
+  .cartouche h1 { margin: 0; font-size: 22px; color: #0f3d68; }
+  .cartouche span { font-size: 12px; color: #5b6575; }
+</style>
+</head><body><div class="page">
+<div class="cartouche"><h1>NeoRetail — Architecture logique</h1><span>Dossier d'architecture (L1) · Version S0</span></div>
+<!-- debut-schema -->
+<div id="d-logique">
+  <div class="main">
+    <div class="layer src"><h3>1 · Sources de données</h3>
+      <div class="deux">
+        <div class="col"><div class="etiquette">Fichiers livrés chaque jour / référentiels (batch)</div>
+          <div class="row">
+            <div class="box"><b>Ventes magasins</b><small>CSV</small></div>
+            <div class="box"><b>Commandes en ligne</b><small>en-têtes + lignes · CSV</small></div>
+            <div class="box"><b>Retours</b><small>CSV</small></div>
+            <div class="box"><b>Référentiels</b><small>clients · produits · magasins</small></div>
+            <div class="box"><b>Changements clients</b><small>CDC · JSONL</small></div>
+          </div></div>
+        <div class="col" style="flex:0 0 170px"><div class="etiquette">Temps réel</div>
+          <div class="row"><div class="box"><b>Navigation web</b><small>clickstream · JSONL</small></div></div></div>
+      </div>
+    </div>
+    <div class="fleche"></div>
+    <div class="layer ing"><h3>2 · Ingestion</h3>
+      <div class="deux">
+        <div class="col"><div class="row">
+          <div class="box"><b>Zone d'atterrissage</b><small>MinIO · fichiers bruts rangés par jour</small></div>
+          <div class="box"><b>Airflow</b><small>chargement quotidien · rejouable · reprise sur erreur</small></div>
+        </div></div>
+        <div class="col" style="flex:0 0 350px"><div class="row">
+          <div class="box"><b>Redpanda</b><small>file de messages (topic)</small></div>
+          <div class="box"><b>Spark Streaming</b><small>lecture continue · reprise</small></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="fleche"></div>
+    <div class="layer lac"><h3>3 · Lakehouse — tables Iceberg sur MinIO, catalogue Hive Metastore</h3>
+      <div class="zones">
+        <div class="zone bronze"><b>BRONZE</b><small>copie brute des sources<br>+ informations de traçabilité</small></div>
+        <div class="passage">dbt (stg_)<br>+ contrôles qualité</div>
+        <div class="zone silver"><b>SILVER</b><small>données typées, sans doublons<br>pseudonymisées (RGPD)</small></div>
+        <div class="passage">dbt (int_, dim_, fct_)<br>+ contrôles qualité</div>
+        <div class="zone gold"><b>GOLD</b><small>schéma en étoile · agrégats<br>couche sémantique</small></div>
+      </div>
+      <div class="pied">Requêtes SQL avec <b>Trino</b> · transformations SQL versionnées avec <b>dbt</b></div>
+    </div>
+    <div class="fleche"><span>seule la zone Gold est exposée</span></div>
+    <div class="layer cons"><h3>4 · Consommation</h3>
+      <div class="row">
+        <div class="box"><b>Superset</b><small>tableaux de bord : CA, panier moyen, conversion, retours</small></div>
+        <div class="box"><b>MLflow</b><small>prévision de la demande · prévisions réécrites dans Gold</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="transverse"><h3>Transverse</h3>
+    <p>S'applique à toutes les couches</p>
+    <div class="box"><b>Qualité</b><small>Great Expectations<br>contrats de données (YAML)</small></div>
+    <div class="box"><b>Traçabilité & catalogue</b><small>OpenLineage · Marquez<br>documentation dbt</small></div>
+    <div class="box"><b>Supervision</b><small>Prometheus · Grafana<br>Alertmanager</small></div>
+    <div class="box"><b>Sécurité & RGPD</b><small>droits par rôle · journal d'audit<br>pseudonymisation</small></div>
+    <div class="box"><b>Industrialisation</b><small>Git · Docker Compose<br>GitHub Actions</small></div>
+  </div>
+</div>
+<!-- fin-schema -->
+</div></body></html>
