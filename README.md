@@ -29,7 +29,7 @@ Chaque dossier contient un README qui décrit son contenu et le jalon auquel il 
 
 | Exigence du sujet | Emplacement | État |
 |---|---|---|
-| **L1** — Dossier d'architecture (PDF) : diagrammes logique / physique, flux, choix motivés, sécurité / RGPD | `docs/L1_dossier_architecture.pdf` + `docs/diagrammes/*.pdf` | ✅ Version S0 (mise à jour à chaque jalon) |
+| **L1** — Dossier d'architecture (PDF) : diagrammes logique / physique, flux, choix motivés, sécurité / RGPD | `docs/L1_dossier_architecture.pdf` + `docs/diagrammes/*.pdf` |Version S0 (mise à jour à chaque jalon) |
 | Décisions d'architecture (ADR courts) | `docs/adr/` |  9 ADR |
 | Dictionnaire de données | `docs/dictionnaire_donnees.md` |  Sources (Silver / Gold en S3-S4) |
 | **L2** — Dépôt Git structuré + README d'orchestration + Makefile | ce dépôt |  Structure faite ; Makefile et démarrage en S1 |
@@ -45,8 +45,6 @@ Chaque dossier contient un README qui décrit son contenu et le jalon auquel il 
 | **L8** — Soutenance + post-mortem (3 risques et plans d'action) | `docs/` | S8 |
 
 ## Documentation
-
-- **[L1 — Dossier d'architecture (PDF)](docs/L1_dossier_architecture.pdf)**
 - [Schémas (PDF)](docs/diagrammes/)
 - [Décisions d'architecture (ADR)](docs/adr/)
 - [Profilage des données sources](docs/profilage_donnees.md)
